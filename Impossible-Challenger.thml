@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impossible Challenge - Watch Ads to Win</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin-top: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #fdbb2d;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .description {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: #ddd;
+            line-height: 1.5;
+        }
+        
+        .ad-spaces {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .ad-unit {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .ad-label {
+            font-size: 0.9rem;
+            color: #ddd;
+            margin-bottom: 10px;
+        }
+        
+        .ad-unit.banner {
+            min-height: 90px;
+        }
+        
+        .ad-unit.rewarded {
+            min-height: 200px;
+        }
+        
+        .ad-id-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #fdbb2d;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            width: 100%;
+            margin-top: 10px;
+            text-align: center;
+        }
+        
+        .ad-id-input::placeholder {
+            color: #ccc;
+        }
+        
+        .progress-container {
+            margin: 30px 0;
+        }
+        
+        .progress-bar {
+            height: 30px;
+            background: #333;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, #1a2a6c, #b21f1f, #fdbb2d);
+            border-radius: 15px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .ads-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .ad-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s, background 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        .ad-box.locked {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .ad-box.available:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .ad-box.watched {
+            background: rgba(0, 255, 0, 0.2);
+        }
+        
+        .ad-box.available {
+            cursor: pointer;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(253, 187, 45, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(253, 187, 45, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(253, 187, 45, 0); }
+        }
+        
+        .ad-box i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #fdbb2d;
+            transition: color 0.3s;
+        }
+        
+        .ad-box.watched i {
+            color: #4CAF50;
+        }
+        
+        .ad-box .ad-text {
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        .ad-number {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+        
+        .timer-container {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .timer {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #fdbb2d;
+        }
+        
+        .chance-text {
+            text-align: center;
+            font-size: 1.5rem;
+            margin: 20px 0;
+            color: #fdbb2d;
+        }
+        
+        .instructions {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 0.9rem;
+        }
+        
+        .instructions h3 {
+            margin-bottom: 10px;
+            color: #fdbb2d;
+        }
+        
+        .instructions ol {
+            padding-left: 20px;
+            line-height: 1.6;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #ddd;
+            font-size: 0.9rem;
+            max-width: 900px;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .ads-container {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .timer {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .description {
+                font-size: 1rem;
+            }
+            
+            .ads-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Impossible Challenge Tool</h1>
+            <p class="description">Watch 10 rewarded ads sequentially to get a 99.99% win chance. Each ad gives 11% progress, with the last one giving 0.99%.</p>
+        </header>
+        
+        <div class="ad-spaces">
+            <div class="ad-unit banner">
+                <div class="ad-label">Banner Ad Space (AdMob)</div>
+                <input type="text" class="ad-id-input" placeholder="Enter your AdMob Banner Ad Unit ID">
+                <div class="ad-placeholder">Banner Ad (320×100)</div>
+            </div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text">
+                <span>0% Complete</span>
+                <span id="progressPercent">0%</span>
+            </div>
+        </div>
+        
+        <div class="chance-text" id="chanceText">
+            Current Win Chance: <span id="winChance">0%</span>
+        </div>
+        
+        <div class="instructions">
+            <h3>How to Play:</h3>
+            <ol>
+                <li>Start by watching Ad 1</li>
+                <li>After completing Ad 1, Ad 2 will become available</li>
+                <li>Continue watching ads sequentially</li>
+                <li>After all 10 ads, you'll get 99.99% win chance</li>
+                <li>A 24-hour timer will start for your reward</li>
+            </ol>
+        </div>
+        
+        <div class="ads-container" id="adsContainer">
+            <!-- Ad boxes will be generated here -->
+        </div>
+        
+        <div class="timer-container" id="timerContainer">
+            <h2>Congratulations! 24 Hour Timer Started</h2>
+            <p>Your reward will be available after the timer ends</p>
+            <div class="timer" id="timer">24:00:00</div>
+        </div>
+        
+        <div class="ad-spaces">
+            <div class="ad-unit rewarded">
+                <div class="ad-label">Rewarded Ad Space (AdMob)</div>
+                <input type="text" class="ad-id-input" placeholder="Enter your AdMob Rewarded Ad Unit ID">
+                <div class="ad-placeholder">Rewarded Video Ad</div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Impossible Challenge Tool &copy; 2023 | This is a simulation for demonstration purposes only</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const adsContainer = document.getElementById('adsContainer');
+            const progressFill = document.getElementById('progressFill');
+            const progressPercent = document.getElementById('progressPercent');
+            const winChance = document.getElementById('winChance');
+            const timerContainer = document.getElementById('timerContainer');
+            const timer = document.getElementById('timer');
+            const chanceText = document.getElementById('chanceText');
+            
+            let adsWatched = 0;
+            let progress = 0;
+            let timerInterval;
+            let timerRunning = false;
+            let timeLeft = 24 * 60 * 60; // 24 hours in seconds
+            
+            // Generate ad boxes
+            for (let i = 1; i <= 10; i++) {
+                const adBox = document.createElement('div');
+                adBox.className = i === 1 ? 'ad-box available' : 'ad-box locked';
+                adBox.id = `ad-${i}`;
+                adBox.innerHTML = `
+                    <div class="ad-number">${i}</div>
+                    <i class="fas fa-ad"></i>
+                    <div>Ad ${i}</div>
+                    <div class="ad-text">${i === 1 ? 'Click to watch' : 'Locked'}</div>
+                `;
+                
+                if (i === 1) {
+                    adBox.addEventListener('click', () => watchAd(i));
+                }
+                
+                adsContainer.appendChild(adBox);
+            }
+            
+            // Watch a single ad
+            function watchAd(adNumber) {
+                if (adsWatched >= 10) return;
+                
+                const adBox = document.getElementById(`ad-${adNumber}`);
+                if (adBox.classList.contains('watched')) return;
+                
+                // Show loading state
+                adBox.innerHTML = `
+                    <div class="ad-number">${adNumber}</div>
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <div>Ad ${adNumber}</div>
+                    <div class="ad-text">Loading ad...</div>
+                `;
+                
+                // Simulate ad loading and watching
+                setTimeout(() => {
+                    const increment = adNumber === 10 ? 0.99 : 11;
+                    progress += increment;
+                    adsWatched++;
+                    
+                    // Update UI
+                    adBox.classList.remove('available');
+                    adBox.classList.add('watched');
+                    adBox.innerHTML = `
+                        <div class="ad-number">${adNumber}</div>
+                        <i class="fas fa-check-circle"></i>
+                        <div>Ad ${adNumber}</div>
+                        <div class="ad-text">Completed</div>
+                    `;
+                    
+                    // Unlock next ad if exists
+                    if (adNumber < 10) {
+                        const nextAd = document.getElementById(`ad-${adNumber + 1}`);
+                        nextAd.classList.remove('locked');
+                        nextAd.classList.add('available');
+                        nextAd.innerHTML = `
+                            <div class="ad-number">${adNumber + 1}</div>
+                            <i class="fas fa-ad"></i>
+                            <div>Ad ${adNumber + 1}</div>
+                            <div class="ad-text">Click to watch</div>
+                        `;
+                        nextAd.addEventListener('click', () => watchAd(adNumber + 1));
+                    }
+                    
+                    progressFill.style.width = `${progress}%`;
+                    progressPercent.textContent = `${progress.toFixed(2)}%`;
+                    winChance.textContent = `${progress.toFixed(2)}%`;
+                    
+                    // If all ads watched
+                    if (adsWatched === 10) {
+                        progress = 99.99;
+                        progressFill.style.width = `${progress}%`;
+                        progressPercent.textContent = `${progress.toFixed(2)}%`;
+                        winChance.textContent = `${progress.toFixed(2)}%`;
+                        
+                        // Show timer after a short delay
+                        setTimeout(() => {
+                            chanceText.style.display = 'none';
+                            timerContainer.style.display = 'block';
+                            startTimer();
+                        }, 1500);
+                    }
+                }, 3000); // Simulate 3 second ad load and watch time
+            }
+            
+            // Start the 24-hour timer
+            function startTimer() {
+                if (timerRunning) return;
+                
+                timerRunning = true;
+                updateTimerDisplay();
+                
+                timerInterval = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateTimerDisplay();
+                    } else {
+                        clearInterval(timerInterval);
+                        timer.innerHTML = "00:00:00";
+                        timer.style.color = "#4CAF50";
+                    }
+                }, 1000);
+            }
+            
+            // Update timer display
+            function updateTimerDisplay() {
+                const hours = Math.floor(timeLeft / 3600);
+                const minutes = Math.floor((timeLeft % 3600) / 60);
+                const seconds = timeLeft % 60;
+                
+                timer.innerHTML = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+        });
+    </script>
+</body>
+</html> 
