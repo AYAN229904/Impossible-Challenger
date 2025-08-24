@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impossible Challenge Tool - Win Rewards</title>
+    <meta name="description" content="Take the Impossible Challenge! Watch 10 rewarded ads to get a 99.99% win chance and start the 24-hour timer.">
+    <meta name="keywords" content="impossible challenge, rewarded ads, win prizes, video ads, challenge tool">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin: 20px 0;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .description {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #ddd;
+            line-height: 1.6;
+        }
+        
+        .progress-container {
+            margin: 30px 0;
+            position: relative;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .progress-bar {
+            height: 35px;
+            background: #333;
+            border-radius: 18px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.4);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            border-radius: 18px;
+            transition: width 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+            position: relative;
+        }
+        
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+            font-size: 1.1rem;
+        }
+        
+        .challenge-info {
+            display: flex;
+            justify-content: space-around;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+        
+        .info-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            min-width: 180px;
+            margin: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+        }
+        
+        .info-box:hover {
+            transform: translateY(-5px);
+        }
+        
+        .info-box i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #4facfe;
+        }
+        
+        .info-box h3 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .info-box p {
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+        
+        .timer {
+            text-align: center;
+            margin: 25px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+            display: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 2px solid #00f2fe;
+        }
+        
+        .timer.active {
+            display: block;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 242, 254, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(0, 242, 254, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 242, 254, 0); }
+        }
+        
+        .timer-text {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #00f2fe;
+        }
+        
+        .timer-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            letter-spacing: 4px;
+            font-family: 'Courier New', monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .watch-button {
+            flex: 1;
+            padding: 18px;
+            background: linear-gradient(to right, #ff416c, #ff4b2b);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .watch-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        .watch-button:active {
+            transform: translateY(1px);
+        }
+        
+        .watch-button:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .reset-button {
+            padding: 18px 25px;
+            background: linear-gradient(to right, #3a7bd5, #00d2ff);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .reset-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        .ads-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin: 25px 0;
+            gap: 20px;
+        }
+        
+        .ad-box {
+            flex: 1;
+            min-width: 250px;
+            min-height: 150px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+        }
+        
+        .ad-box:hover {
+            transform: scale(1.02);
+        }
+        
+        .ad-label {
+            font-size: 1rem;
+            color: #aaa;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .ad-box.rewarded {
+            background: rgba(106, 17, 203, 0.2);
+            border: 2px solid #6a11cb;
+        }
+        
+        .ad-box.banner {
+            min-height: 120px;
+            background: rgba(255, 193, 7, 0.1);
+            border: 2px solid #ffc107;
+        }
+        
+        .ad-placeholder {
+            color: #aaa;
+            text-align: center;
+            padding: 15px;
+        }
+        
+        .ad-placeholder i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #4facfe;
+        }
+        
+        .ad-placeholder p {
+            margin: 5px 0;
+        }
+        
+        .ad-code {
+            font-family: 'Courier New', monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #ddd;
+            font-size: 1rem;
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .description {
+                font-size: 1.1rem;
+            }
+            
+            .info-box {
+                width: 100%;
+                margin: 8px 0;
+            }
+            
+            .challenge-info {
+                flex-direction: column;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .ad-box {
+                min-width: 100%;
+            }
+        }
+        
+        /* Animation for progress update */
+        @keyframes progressAnimation {
+            0% { transform: scaleX(0); }
+            100% { transform: scaleX(1); }
+        }
+        
+        /* Confetti effect */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            opacity: 0.7;
+            border-radius: 0;
+            animation: confetti-fall 5s ease-in-out infinite;
+        }
+        
+        @keyframes confetti-fall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Impossible Challenge Tool</h1>
+            <p class="description">Watch 10 rewarded ads to get a 99.99% win chance! After completing all ads, a 24-hour timer will start. Complete the challenge to claim your reward!</p>
+        </header>
+        
+        <div class="progress-container">
+            <div class="progress-info">
+                <span>Challenge Progress</span>
+                <span id="progress-percentage">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+                <div class="progress-text" id="progress-text">0/10 Videos Watched</div>
+            </div>
+        </div>
+        
+        <div class="challenge-info">
+            <div class="info-box">
+                <i class="fas fa-video"></i>
+                <h3>Videos Watched</h3>
+                <p id="videos-watched">0/10</p>
+            </div>
+            <div class="info-box">
+                <i class="fas fa-trophy"></i>
+                <h3>Win Chance</h3>
+                <p id="win-chance">0%</p>
+            </div>
+            <div class="info-box">
+                <i class="fas fa-clock"></i>
+                <h3>Time Remaining</h3>
+                <p id="time-remaining">--:--:--</p>
+            </div>
+        </div>
+        
+        <div class="timer" id="timer">
+            <p class="timer-text">Challenge Completed! Timer Started:</p>
+            <div class="timer-display" id="timer-display">24:00:00</div>
+            <p style="margin-top: 15px;">Claim your reward after the timer ends!</p>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="watch-button" id="watch-button">
+                <i class="fas fa-play-circle"></i> Watch Rewarded Ad (11% Progress)
+            </button>
+            <button class="reset-button" id="reset-button">
+                <i class="fas fa-redo"></i> Reset Challenge
+            </button>
+        </div>
+        
+        <div class="ads-container">
+            <div class="ad-box rewarded">
+                <span class="ad-label">REWARDED AD (VIDEO)</span>
+                <div class="ad-placeholder">
+                    <i class="fas fa-ad"></i>
+                    <p>Rewarded Ad Space</p>
+                    <div class="ad-code">AdSense Unit ID: REWARDED_AD_ID</div>
+                </div>
+            </div>
+            
+            <div class="ad-box banner">
+                <span class="ad-label">BANNER AD</span>
+                <div class="ad-placeholder">
+                    <i class="fas fa-ad"></i>
+                    <p>Banner Ad Space</p>
+                    <div class="ad-code">AdSense Unit ID: BANNER_AD_ID</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Impossible Challenge Tool &copy; 2023 | All Rights Reserved</p>
+        <p>This is a simulated experience for demonstration purposes only.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const watchButton = document.getElementById('watch-button');
+            const resetButton = document.getElementById('reset-button');
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+            const progressPercentage = document.getElementById('progress-percentage');
+            const videosWatchedElement = document.getElementById('videos-watched');
+            const winChanceElement = document.getElementById('win-chance');
+            const timer = document.getElementById('timer');
+            const timerDisplay = document.getElementById('timer-display');
+            const timeRemainingElement = document.getElementById('time-remaining');
+            
+            let videosWatched = 0;
+            let winChance = 0;
+            let countdownInterval = null;
+            
+            // Check if there's saved progress in localStorage
+            if (localStorage.getItem('challengeProgress')) {
+                const savedProgress = JSON.parse(localStorage.getItem('challengeProgress'));
+                videosWatched = savedProgress.videosWatched;
+                winChance = savedProgress.winChance;
+                
+                updateProgress();
+                
+                // If challenge was completed, start the timer
+                if (videosWatched >= 10) {
+                    startTimer();
+                    watchButton.disabled = true;
+                    watchButton.textContent = 'All Ads Watched';
+                }
+            }
+            
+            watchButton.addEventListener('click', function() {
+                if (videosWatched < 10) {
+                    // Simulate watching an ad
+                    simulateAdView();
+                }
+            });
+            
+            resetButton.addEventListener('click', function() {
+                // Show confirmation dialog
+                if (confirm("Are you sure you want to reset the challenge? All progress will be lost.")) {
+                    resetChallenge();
+                }
+            });
+            
+            function simulateAdView() {
+                watchButton.disabled = true;
+                watchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Ad playing...';
+                
+                // Create confetti effect
+                createConfetti();
+                
+                // Simulate ad loading and viewing time
+                setTimeout(() => {
+                    videosWatched++;
+                    
+                    if (videosWatched < 10) {
+                        winChance += 11;
+                    } else {
+                        // Last ad gives 0.99% to make total 99.99%
+                        winChance += 0.99;
+                        // Celebrate completion
+                        celebrateCompletion();
+                    }
+                    
+                    updateProgress();
+                    
+                    // Save progress to localStorage
+                    localStorage.setItem('challengeProgress', JSON.stringify({
+                        videosWatched: videosWatched,
+                        winChance: winChance
+                    }));
+                    
+                    // If all ads watched, start the timer
+                    if (videosWatched >= 10) {
+                        watchButton.disabled = true;
+                        watchButton.innerHTML = '<i class="fas fa-check-circle"></i> All Ads Watched';
+                        startTimer();
+                    } else {
+                        watchButton.disabled = false;
+                        watchButton.innerHTML = '<i class="fas fa-play-circle"></i> Watch Rewarded Ad (11% Progress)';
+                    }
+                }, 3000); // Simulate 3 seconds ad view
+            }
+            
+            function updateProgress() {
+                const progressWidth = (videosWatched / 10) * 100;
+                progressFill.style.width = `${progressWidth}%`;
+                progressText.textContent = `${videosWatched}/10 Videos Watched`;
+                progressPercentage.textContent = `${progressWidth.toFixed(0)}%`;
+                videosWatchedElement.textContent = `${videosWatched}/10`;
+                winChanceElement.textContent = `${winChance.toFixed(2)}%`;
+            }
+            
+            function startTimer() {
+                // Show timer
+                timer.classList.add('active');
+                
+                let timerEnd = localStorage.getItem('timerEnd');
+                
+                // If timer hasn't been set before, set it for 24 hours from now
+                if (!timerEnd) {
+                    const now = new Date();
+                    const endTime = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+                    timerEnd = endTime.getTime();
+                    localStorage.setItem('timerEnd', timerEnd);
+                }
+                
+                // Update the countdown every second
+                countdownInterval = setInterval(function() {
+                    const now = new Date().getTime();
+                    const distance = timerEnd - now;
+                    
+                    // If the countdown is finished
+                    if (distance < 0) {
+                        clearInterval(countdownInterval);
+                        timerDisplay.textContent = "00:00:00";
+                        timeRemainingElement.textContent = "00:00:00";
+                        timer.innerHTML += '<p style="color:#4caf50; margin-top: 15px; font-weight: bold;">Reward Available! Claim your prize now!</p>';
+                        return;
+                    }
+                    
+                    // Calculate hours, minutes and seconds remaining
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    
+                    // Display the result
+                    const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    timerDisplay.textContent = timeString;
+                    timeRemainingElement.textContent = timeString;
+                }, 1000);
+            }
+            
+            function resetChallenge() {
+                // Clear intervals
+                if (countdownInterval) {
+                    clearInterval(countdownInterval);
+                }
+                
+                // Reset variables
+                videosWatched = 0;
+                winChance = 0;
+                
+                // Remove saved data
+                localStorage.removeItem('challengeProgress');
+                localStorage.removeItem('timerEnd');
+        
